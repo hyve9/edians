@@ -5,7 +5,6 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 
 def init_model(model_name, num_labels):
     os.environ["TF_USE_LEGACY_KERAS"] ="1"
-    os.environ["KERAS_BACKEND"] = "tensorflow"
     initializer = tf.keras.initializers.TruncatedNormal(seed=123)
     model = TFAutoModelForTokenClassification.from_pretrained(model_name, num_labels=num_labels, ignore_mismatched_sizes=True)
     model.classifier = tf.keras.layers.Dense(num_labels, kernel_initializer=initializer)
