@@ -4,7 +4,7 @@ from transformers import TFAutoModelForTokenClassification
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 def init_model(model_name, num_labels):
-    os.environ["TF_USE_LEGACY_KERAS"] ="1"
+    os.environ["TF_USE_LEGACY_KERAS"] = "1"
     initializer = tf.keras.initializers.TruncatedNormal(seed=123)
     model = TFAutoModelForTokenClassification.from_pretrained(model_name, num_labels=num_labels, ignore_mismatched_sizes=True)
     model.classifier = tf.keras.layers.Dense(num_labels, kernel_initializer=initializer)
@@ -52,9 +52,9 @@ def eval_model(model, tokenizer, papers, labels, max_len, label_mapping):
 
     true_label_ids = tf.ragged.constant(true_label_ids).to_tensor()
 
-    precision = precision_score(true_label_ids, predicted_labels, average='macro', zero_division=0)
-    recall = recall_score(true_label_ids, predicted_labels, average='macro', zero_division=0)
-    f1 = f1_score(true_label_ids, predicted_labels, average='macro', zero_division=0)
+    precision = precision_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
+    recall = recall_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
+    f1 = f1_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
 
     true_positives = tf.reduce_sum(tf.cast(tf.logical_and(tf.equal(true_label_ids, predicted_labels), tf.not_equal(true_label_ids, 0)), tf.int32)).numpy()
     false_positives = tf.reduce_sum(tf.cast(tf.logical_and(tf.not_equal(true_label_ids, predicted_labels), tf.equal(predicted_labels, 1)), tf.int32)).numpy()

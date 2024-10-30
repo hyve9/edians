@@ -75,7 +75,7 @@ if __name__ == "__main__":
     model = m.train_model(model, train_dataset, val_dataset, num_epochs, learning_rate)
 
     # Evaluate model
-    precision, recall, f1_score, true_positives, false_positives, false_negatives = m.eval_model(model, tokenizer, papers, labels, max_len)
+    precision, recall, f1_score, true_positives, false_positives, false_negatives = m.eval_model(model, tokenizer, papers, labels, max_len, label_mapping)
 
     logging.info(f'Precision: {precision}')
     logging.info(f'Recall: {recall}')
