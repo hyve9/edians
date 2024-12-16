@@ -33,9 +33,9 @@ if __name__ == "__main__":
     loglevel = args.log.lower() if (args.log.lower() in levels) else 'warn'
     logging.basicConfig(stream=sys.stderr, level=levels[loglevel], format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-    max_len = 2048
-    num_epochs = 10
-    batch_size = 4
+    max_len = 1024
+    num_epochs = 3
+    batch_size = 16
     learning_rate = 3e-5
     model_name = 'allenai/longformer-base-4096'
 
