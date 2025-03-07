@@ -44,7 +44,12 @@ def eval_model(model, tokenizer, papers, labels, max_len, label_mapping):
     attention_masks = tf.concat(attention_masks, axis=0)
 
     predictions = model.predict({'input_ids': input_ids, 'attention_mask': attention_masks})
-    predicted_labels = tf.argmax(predictions.logits, axis=-1).numpy()
+    # predicted_labels = tf.argmax(predictions.logits, axis=-1).numpy()
+
+    # Get probabilities for each label
+    predicted_probs = tf.sigmoid(predictions.logits).numpy()
+    # Convert probabilities to binary predictions based on a threshold (e.g., 0.5)
+    predicted_labels = (predicted_probs > 0.5).astype(int)
 
     true_label_ids = []
     for label_list in true_labels:
@@ -52,9 +57,9 @@ def eval_model(model, tokenizer, papers, labels, max_len, label_mapping):
 
     true_label_ids = tf.ragged.constant(true_label_ids).to_tensor()
 
-    precision = precision_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
-    recall = recall_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
-    f1 = f1_score(true_label_ids, predicted_labels, average='macro', zero_division='0')
+    precision = precision_score(true_label_ids, predicted_labels, average='macro')
+    recall = recall_score(true_label_ids, predicted_labels, average='macro')
+    f1 = f1_score(true_label_ids, predicted_labels, average='macro')
 
     true_positives = tf.reduce_sum(tf.cast(tf.logical_and(tf.equal(true_label_ids, predicted_labels), tf.not_equal(true_label_ids, 0)), tf.int32)).numpy()
     false_positives = tf.reduce_sum(tf.cast(tf.logical_and(tf.not_equal(true_label_ids, predicted_labels), tf.equal(predicted_labels, 1)), tf.int32)).numpy()

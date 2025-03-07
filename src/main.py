@@ -33,9 +33,9 @@ if __name__ == "__main__":
     loglevel = args.log.lower() if (args.log.lower() in levels) else 'warn'
     logging.basicConfig(stream=sys.stderr, level=levels[loglevel], format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
-    max_len = 1024
-    num_epochs = 3
-    batch_size = 16
+    max_len = 512
+    num_epochs = 8
+    batch_size = 8
     learning_rate = 3e-5
     model_name = 'allenai/longformer-base-4096'
 
@@ -64,6 +64,10 @@ if __name__ == "__main__":
     dataset = u.create_dataset(papers, labels, max_len, tokenizer, batch_size, label_mapping)
     train_size = int(0.8 * len(list(dataset)))
     train_dataset, val_dataset = dataset.take(train_size), dataset.skip(train_size)
+
+    # Cast datasets
+    # train_dataset = train_dataset.map(u.cast_to_float32)
+    # val_dataset = val_dataset.map(u.cast_to_float32)
     
     # Initialize model
     if args.model_checkpoint:

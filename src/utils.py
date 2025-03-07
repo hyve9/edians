@@ -4,7 +4,7 @@ from pypdf import PdfReader
 import tensorflow as tf
 
 def read_labels(file_path):
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r', encoding='utf-8-sig') as f:
         reader = csv.reader(f)
         labels = {}
         label_set = set()
@@ -14,7 +14,6 @@ def read_labels(file_path):
             else:
                 labels[row[0]].append(row[1])
             label_set.add(row[1])
-    
     label_set.add("unknown") 
     label_mapping = {label: idx for idx, label in enumerate(label_set)}
     num_labels = len(label_set)
@@ -38,6 +37,16 @@ def create_dataset(papers, labels, max_len, tokenizer, batch_size, label_mapping
     label_list = [labels[paper_id] for paper_id in papers.keys()]
     dataset = encode_samples(texts, label_list, tokenizer, max_len, label_mapping)
     return dataset.batch(batch_size)
+
+# def cast_to_float32(data, label):
+#     data = {k: tf.cast(v, tf.float32) for k, v in data.items()}
+#     label = tf.cast(label, tf.float32)
+#     return data, label
+
+# def cast_to_int32(data, label):
+#     data = {k: tf.cast(v, tf.int32) for k, v in data.items()}
+#     label = tf.cast(label, tf.int32)
+#     return data, label
 
 def encode_samples(texts, labels, tokenizer, max_len, label_mapping):
     input_ids = []
